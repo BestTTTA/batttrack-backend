@@ -33,7 +33,7 @@ jobs:
       run: |
         gcloud run deploy batttrack \
         --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/batttrack:${{ github.sha }} \
-        --region asia-southeast1 \
+        --region us-central1  \
         --platform managed \
         --allow-unauthenticated \
         --set-env-vars MONGO_URL=${{ secrets.MONGO_URL }} \
