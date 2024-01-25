@@ -31,7 +31,7 @@ jobs:
 
     - name:  Cloud Run
       run: |
-        gcloud run deploy batt-track \
+        gcloud run deploy batttrack \
         --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/batttrack:${{ github.sha }} \
         --region asia-southeast1 \
         --platform managed \
