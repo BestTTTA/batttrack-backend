@@ -16,12 +16,13 @@ async def add_product(list_product: ProductList):
 
     for product in list_product.list_product:
         product_data = product.dict()  # Convert product to dictionary
-        if product.product_id in existing_product_ids or users_collection.find_one(
+        existing_product = users_collection.find_one(
             {"list_product.product_id": product.product_id}
-        ):
-
+        )
+        if product.product_id in existing_product_ids or existing_product:
+            duplicate_product_data = existing_product['list_product'][0] if existing_product and 'list_product' in existing_product else product_data
             return { 
-                "added_products": product_data 
+                "added_products": duplicate_product_data  # Return the details of the duplicate product
             }
 
         existing_product_ids.add(product.product_id)
