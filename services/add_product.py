@@ -5,8 +5,7 @@ from pymongo.errors import BulkWriteError
 from pymongo import UpdateOne
 
 router = APIRouter(
-    tags=["Product Management"],
-    responses={404: {"description": "Not found"}}
+    tags=["Product Management"], responses={404: {"description": "Not found"}}
 )
 
 @router.post("/add_product/")
@@ -16,14 +15,23 @@ async def add_product(list_product: ProductList):
     added_products = []  # List to store added products details
 
     for product in list_product.list_product:
-        if product.product_id in existing_product_ids or users_collection.find_one({"list_product.product_id": product.product_id}):
-            raise HTTPException(status_code=400, detail=f"Product with ID {product.product_id} already exists")
+        product_data = product.dict()  # Convert product to dictionary
+        if product.product_id in existing_product_ids or users_collection.find_one(
+            {"list_product.product_id": product.product_id}
+        ):
+
+            return { 
+                "added_products": product_data 
+            }
 
         existing_product_ids.add(product.product_id)
-        product_data = product.dict()  # Convert product to dictionary
-        operations.append(UpdateOne({"list_product.product_id": {"$ne": product.product_id}},
-                                    {"$push": {"list_product": product_data}},
-                                    upsert=True))
+        operations.append(
+            UpdateOne(
+                {"list_product.product_id": {"$ne": product.product_id}},
+                {"$push": {"list_product": product_data}},
+                upsert=True,
+            )
+        )
         added_products.append(product_data)  # Add product data to the list
 
     if operations:
@@ -32,4 +40,6 @@ async def add_product(list_product: ProductList):
         except BulkWriteError as e:
             raise HTTPException(status_code=500, detail=str(e.details))
 
-    return {"added_products": added_products}  # Return the details of added products
+    return {
+        "added_products": added_products  # Return the details of added products
+    }
