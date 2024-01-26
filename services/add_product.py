@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from module.database import users_collection
-from basemodel.product_id import ProductList
+from basemodel.product_id import ProductList  # Ensure this matches your data model
 from pymongo.errors import BulkWriteError
 from pymongo import UpdateOne
 
@@ -19,8 +19,9 @@ async def add_product(list_product: ProductList):
             raise HTTPException(status_code=400, detail=f"Product with ID {product.product_id} already exists")
 
         existing_product_ids.add(product.product_id)
+        # Here, you're now adding the entire product object to the database
         operations.append(UpdateOne({"list_product.product_id": {"$ne": product.product_id}},
-                                    {"$push": {"list_product": {"product_id": product.product_id}}},
+                                    {"$push": {"list_product": product.dict()}},
                                     upsert=True))
 
     if operations:

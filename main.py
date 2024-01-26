@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from services import add_user_inproduct, get_productID, get_product, register, login, add_product
+from services import get_productID, get_product, register, login, add_product, createModelworker, endWorkupdate, stageWorkupdate, updataStageworker, updateStartworker, updateEndworker
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -11,14 +11,20 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+)   
 
-app.include_router(add_user_inproduct.router)
-app.include_router(get_productID.router)
-app.include_router(get_product.router)
 app.include_router(register.router)
 app.include_router(login.router)
 app.include_router(add_product.router)
+app.include_router(createModelworker.router)
+app.include_router(endWorkupdate.router)
+app.include_router(stageWorkupdate.router)
+app.include_router(updataStageworker.router)
+app.include_router(updateStartworker.router)
+app.include_router(updateEndworker.router)
+
+app.include_router(get_productID.router)
+app.include_router(get_product.router)
 
 @app.get("/")
 def read_root():
