@@ -13,16 +13,18 @@ router = APIRouter(
 async def add_product(list_product: ProductList):
     operations = []
     existing_product_ids = set()
+    added_products = []  # List to store added products details
 
     for product in list_product.list_product:
         if product.product_id in existing_product_ids or users_collection.find_one({"list_product.product_id": product.product_id}):
             raise HTTPException(status_code=400, detail=f"Product with ID {product.product_id} already exists")
 
         existing_product_ids.add(product.product_id)
-        # Here, you're now adding the entire product object to the database
+        product_data = product.dict()  # Convert product to dictionary
         operations.append(UpdateOne({"list_product.product_id": {"$ne": product.product_id}},
-                                    {"$push": {"list_product": product.dict()}},
+                                    {"$push": {"list_product": product_data}},
                                     upsert=True))
+        added_products.append(product_data)  # Add product data to the list
 
     if operations:
         try:
@@ -30,4 +32,4 @@ async def add_product(list_product: ProductList):
         except BulkWriteError as e:
             raise HTTPException(status_code=500, detail=str(e.details))
 
-    return {"message": "Products added successfully"}
+    return {"added_products": added_products}  # Return the details of added products
