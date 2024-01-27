@@ -5,7 +5,7 @@ class Product(BaseModel):
     product_id: str
     start_work: str
     end_work: str
-    stage_work: str
+    stage_work: int
     
 class ProductList(BaseModel):
     list_product: List[Product]
