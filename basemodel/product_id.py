@@ -13,10 +13,8 @@ class ProductList(BaseModel):
 class WorkerUpdateData(BaseModel):
     worker_id: str
     user_name: str
-    stage_work: int
-    holding_time: str   
+    stage_work: int  
     start_work: str
-    end_work: str   
     
 class EndWorkUpdate(BaseModel):
     end_work: str
