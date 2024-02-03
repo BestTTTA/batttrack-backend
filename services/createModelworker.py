@@ -21,12 +21,10 @@ async def update_worker_model(product_id: str, worker_data: WorkerUpdateData):
         worker_updated = False
         for worker in product.get('workers', []):
             if worker['worker_id'] == worker_data.worker_id:
-                # Check if stage_work or start_work is already set for this worker
                 if 'stage_work' in worker and worker['stage_work']:
                     raise HTTPException(status_code=400, detail="Stage work can only be set once per worker")
                 if 'start_work' in worker and worker['start_work']:
                     raise HTTPException(status_code=400, detail="Start work can only be set once per worker")
-                # Update existing worker data
                 worker.update(worker_data.dict())
                 worker_updated = True
                 break

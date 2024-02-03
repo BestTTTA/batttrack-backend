@@ -12,17 +12,17 @@ router = APIRouter(
 async def add_product(list_product: ProductList):
     operations = []
     existing_product_ids = set()
-    added_products = []  # List to store added products details
+    added_products = [] 
 
     for product in list_product.list_product:
-        product_data = product.dict()  # Convert product to dictionary
+        product_data = product.dict()  
         existing_product = users_collection.find_one(
             {"list_product.product_id": product.product_id}
         )
         if product.product_id in existing_product_ids or existing_product:
             duplicate_product_data = existing_product['list_product'][0] if existing_product and 'list_product' in existing_product else product_data
             return { 
-                "added_products": duplicate_product_data  # Return the details of the duplicate product
+                "added_products": duplicate_product_data 
             }
 
         existing_product_ids.add(product.product_id)
